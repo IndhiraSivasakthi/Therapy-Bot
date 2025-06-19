@@ -18,14 +18,13 @@ export default function Chat() {
     const theme = localStorage.getItem("theme");
     if (theme === "dark") setDarkMode(true);
 
-    // Fetch motivational quote
     fetch("https://zenquotes.io/api/random")
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setQuote(`${data[0].q} — ${data[0].a}`);
       })
-      .catch(() => setQuote("“Keep going, you're doing great.” — TherapyBot"));
-  }, []);
+      .catch(() => setQuote("“Keep going, you are doing great.” — TherapyBot"));
+  }, [router]); // ✅ Added `router` to dependency array
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -34,7 +33,7 @@ export default function Chat() {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    setMessages((prev) => [...prev, { sender: 'user', text: input }]);
+    setMessages(prev => [...prev, { sender: 'user', text: input }]);
     setLoading(true);
 
     try {
@@ -45,9 +44,9 @@ export default function Chat() {
       });
 
       const data = await res.json();
-      setMessages((prev) => [...prev, { sender: 'bot', text: data.reply || "I'm here to listen." }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: data.reply || "I'm here to listen." }]);
     } catch {
-      setMessages((prev) => [...prev, { sender: 'bot', text: "Sorry, something went wrong." }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: "Sorry, something went wrong." }]);
     }
 
     setInput("");
@@ -104,7 +103,6 @@ export default function Chat() {
 
           {/* Chat Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {/* Motivational Quote */}
             {quote && (
               <div
                 className="text-center italic text-sm text-gray-500 dark:text-gray-400 mb-2 p-2 border rounded"
@@ -139,7 +137,7 @@ export default function Chat() {
             <div ref={chatEndRef}></div>
           </div>
 
-          {/* Input & Prompt Templates */}
+          {/* Input */}
           <div className="p-4 border-t flex flex-col space-y-2"
                style={{ borderColor: darkMode ? "#374151" : "#e5e7eb" }}>
             <select
@@ -154,7 +152,7 @@ export default function Chat() {
             >
               <option value="">📝 Choose a prompt...</option>
               <option value="I feel anxious">😟 I feel anxious</option>
-              <option value="I'm feeling overwhelmed">😫 I'm overwhelmed</option>
+              <option value="I'm feeling overwhelmed">😫 I'm feeling overwhelmed</option>
               <option value="I need help sleeping">😴 I need help sleeping</option>
               <option value="I'm feeling lonely">😔 I'm feeling lonely</option>
               <option value="I need motivation">💪 I need motivation</option>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export default function Login() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function Login() {
         <input
           type="email"
           placeholder="Email"
-          className="w-full mb-4 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="w-full mb-4 px-4 py-2 border rounded-lg"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -31,7 +32,7 @@ export default function Login() {
         <input
           type="password"
           placeholder="Password"
-          className="w-full mb-6 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="w-full mb-6 px-4 py-2 border rounded-lg"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -44,7 +45,8 @@ export default function Login() {
         </button>
 
         <p className="text-center text-sm mt-4 text-gray-600 dark:text-gray-300">
-          Don&apos;t have an account? <a className="text-blue-500 hover:underline" href="/register">Register</a>
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="text-blue-500 hover:underline">Register</Link>
         </p>
       </div>
     </div>
