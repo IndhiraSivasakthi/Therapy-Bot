@@ -11,6 +11,13 @@ export default function Chat() {
   const [quote, setQuote] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Helper to decode HTML entities like &#39; to '
+  function decodeHTMLEntities(text: string) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = text;
+    return txt.value;
+  }
+
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("auth") === "true";
     if (!isLoggedIn) router.push("/login");
@@ -24,7 +31,7 @@ export default function Chat() {
         if (Array.isArray(data)) setQuote(`${data[0].q} — ${data[0].a}`);
       })
       .catch(() => setQuote("“Keep going, you are doing great.” — TherapyBot"));
-  }, [router]); // ✅ Added `router` to dependency array
+  }, [router]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -54,7 +61,7 @@ export default function Chat() {
   };
 
   const handleExport = () => {
-    const content = messages.map(m => `${m.sender === 'user' ? 'You' : 'Bot'}: ${m.text}`).join("\n");
+    const content = messages.map(m => `${m.sender === 'user' ? 'You' : 'Bot'}: ${decodeHTMLEntities(m.text)}`).join("\n");
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -78,11 +85,11 @@ export default function Chat() {
 
       <main className="p-4">
         <div className="max-w-2xl mx-auto rounded-lg overflow-hidden flex flex-col h-[90vh] border shadow-md"
-             style={{ backgroundColor: darkMode ? "#1f2937" : "#f9f9f9" }}>
+          style={{ backgroundColor: darkMode ? "#1f2937" : "#f9f9f9" }}>
 
           {/* Header */}
           <div className="p-4 flex justify-between items-center border-b"
-               style={{ borderColor: darkMode ? "#374151" : "#e5e7eb" }}>
+            style={{ borderColor: darkMode ? "#374151" : "#e5e7eb" }}>
             <h1 className="text-xl font-bold">💬 TherapyBot</h1>
             <div className="space-x-2">
               <button
@@ -108,7 +115,7 @@ export default function Chat() {
                 className="text-center italic text-sm text-gray-500 dark:text-gray-400 mb-2 p-2 border rounded"
                 style={{ backgroundColor: darkMode ? "#111827" : "#f0f4f8" }}
               >
-                {quote}
+                {decodeHTMLEntities(quote)}
               </div>
             )}
 
@@ -129,7 +136,7 @@ export default function Chat() {
                         : "#000"
                   }}
                 >
-                  {msg.text}
+                  {decodeHTMLEntities(msg.text)}
                 </div>
               </div>
             ))}
@@ -139,7 +146,7 @@ export default function Chat() {
 
           {/* Input */}
           <div className="p-4 border-t flex flex-col space-y-2"
-               style={{ borderColor: darkMode ? "#374151" : "#e5e7eb" }}>
+            style={{ borderColor: darkMode ? "#374151" : "#e5e7eb" }}>
             <select
               onChange={(e) => setInput(e.target.value)}
               className="p-2 rounded border text-sm"

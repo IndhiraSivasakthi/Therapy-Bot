@@ -45,7 +45,7 @@ export default function Login() {
         </button>
 
         <p className="text-center text-sm mt-4 text-gray-600 dark:text-gray-300">
-          Don&apos;t have an account?{' '}
+          Don&#39;t have an account?{' '}
           <Link href="/register" className="text-blue-500 hover:underline">Register</Link>
         </p>
       </div>
