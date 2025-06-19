@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 
@@ -27,9 +28,12 @@ export default function Chat() {
     fetch("https://zenquotes.io/api/random")
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data)) setQuote(`${data[0].q} — ${data[0].a}`);
+        if (Array.isArray(data))
+          setQuote(`${data[0].q} — ${data[0].a}`);
       })
-      .catch(() => setQuote("“Keep going, you're doing great.” — TherapyBot"));
+      .catch(() =>
+        setQuote("Keep going, don&#39;t worry, you\u2019re doing great.")
+      );
   }, [router]);
 
   useEffect(() => {
@@ -38,8 +42,10 @@ export default function Chat() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
     setMessages(prev => [...prev, { sender: 'user', text: input }]);
     setLoading(true);
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -47,16 +53,19 @@ export default function Chat() {
         body: JSON.stringify({ input }),
       });
       const data = await res.json();
-      setMessages(prev => [...prev, { sender: 'bot', text: data.reply || "I'm here to listen." }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: data.reply || "I\u2019m here to listen." }]);
     } catch {
       setMessages(prev => [...prev, { sender: 'bot', text: "Sorry, something went wrong." }]);
     }
+
     setInput("");
     setLoading(false);
   };
 
   const handleExport = () => {
-    const content = messages.map(m => `${m.sender === 'user' ? 'You' : 'Bot'}: ${decodeHTMLEntities(m.text)}`).join("\n");
+    const content = messages
+      .map(m => `${m.sender === 'user' ? 'You' : 'Bot'}: ${decodeHTMLEntities(m.text)}`)
+      .join("\n");
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -74,14 +83,13 @@ export default function Chat() {
 
   return (
     <div className={darkMode ? "bg-black text-white" : "bg-white text-black"} style={{ minHeight: "100vh" }}>
-      <Head>
-        <title>TherapyBot</title>
-      </Head>
+      <Head><title>TherapyBot</title></Head>
 
       <main className="p-4">
-        <div className="max-w-2xl mx-auto rounded-lg overflow-hidden flex flex-col h-[90vh] border shadow-md"
+        <div className="max-w-2xl mx-auto flex flex-col h-[90vh] border shadow-md rounded-lg overflow-hidden"
              style={{ backgroundColor: darkMode ? "#1f2937" : "#f9f9f9" }}>
-
+          
+          {/* Header */}
           <div className="p-4 flex justify-between items-center border-b"
                style={{ borderColor: darkMode ? "#374151" : "#e5e7eb" }}>
             <h1 className="text-xl font-bold">💬 TherapyBot</h1>
@@ -95,47 +103,58 @@ export default function Chat() {
                 className="px-3 py-1 bg-green-600 text-white rounded text-sm">
                 Export Chat
               </button>
+              <Link href="/login">
+                <a className="px-3 py-1 text-sm text-blue-400 hover:underline">Logout</a>
+              </Link>
             </div>
           </div>
 
+          {/* Chat */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {quote && (
-              <div className="text-center italic text-sm text-gray-500 dark:text-gray-400 mb-2 p-2 border rounded"
+              <div className="text-center italic text-sm mb-2 p-2 border rounded text-gray-500 dark:text-gray-400"
                    style={{ backgroundColor: darkMode ? "#111827" : "#f0f4f8" }}>
                 {decodeHTMLEntities(quote)}
               </div>
             )}
-
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className="px-4 py-2 rounded-lg max-w-xs break-words text-sm"
                      style={{
-                       backgroundColor: msg.sender === 'user' ? "#3b82f6" : darkMode ? "#374151" : "#e5e7eb",
-                       color: msg.sender === 'user' ? "#fff" : darkMode ? "#fff" : "#000"
+                       backgroundColor: msg.sender === 'user'
+                         ? "#3b82f6"
+                         : darkMode
+                           ? "#374151"
+                           : "#e5e7eb",
+                       color: msg.sender === 'user'
+                         ? "#fff"
+                         : darkMode
+                           ? "#fff"
+                           : "#000"
                      }}>
                   {decodeHTMLEntities(msg.text)}
                 </div>
               </div>
             ))}
             {loading && <div className="text-blue-400 text-sm">Bot is typing...</div>}
-            <div ref={chatEndRef}></div>
+            <div ref={chatEndRef} />
           </div>
 
-          <div className="p-4 border-t flex flex-col space-y-2"
+          {/* Input Area */}
+          <div className="p-4 flex flex-col space-y-2 border-t"
                style={{ borderColor: darkMode ? "#374151" : "#e5e7eb" }}>
-            <select onChange={(e) => setInput(e.target.value)}
+            <select onChange={e => setInput(e.target.value)} value=""
                     className="p-2 rounded border text-sm"
                     style={{
                       backgroundColor: darkMode ? "#111827" : "#fff",
                       color: darkMode ? "#fff" : "#000",
                       borderColor: darkMode ? "#4b5563" : "#d1d5db"
-                    }}
-                    value="">
+                    }}>
               <option value="">📝 Choose a prompt...</option>
               <option value="I feel anxious">😟 I feel anxious</option>
-              <option value="I'm feeling overwhelmed">😫 I'm feeling overwhelmed</option>
+              <option value="I\u2019m feeling overwhelmed">😫 I\u2019m feeling overwhelmed</option>
               <option value="I need help sleeping">😴 I need help sleeping</option>
-              <option value="I'm feeling lonely">😔 I'm feeling lonely</option>
+              <option value="I\u2019m feeling lonely">😔 I\u2019m feeling lonely</option>
               <option value="I need motivation">💪 I need motivation</option>
             </select>
 
@@ -149,15 +168,15 @@ export default function Chat() {
                      }}
                      placeholder="How are you feeling?"
                      value={input}
-                     onChange={(e) => setInput(e.target.value)}
-                     onKeyDown={(e) => e.key === "Enter" && handleSend()} />
+                     onChange={e => setInput(e.target.value)}
+                     onKeyDown={e => e.key === "Enter" && handleSend()} />
+
               <button onClick={handleSend}
                       className="bg-blue-600 text-white px-4 rounded-r-lg hover:bg-blue-700">
                 Send
               </button>
             </div>
           </div>
-
         </div>
       </main>
     </div>
