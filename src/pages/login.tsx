@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import { useState } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
@@ -17,28 +17,36 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-200 dark:from-gray-900 dark:to-gray-800">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-sm">
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Login
-        </h2>
-        <input type="email" placeholder="Email"
-               className="w-full mb-4 px-4 py-2 border rounded-lg"
-               value={email} onChange={e => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password"
-               className="w-full mb-6 px-4 py-2 border rounded-lg"
-               value={password} onChange={e => setPassword(e.target.value)} />
-
-        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
-                onClick={handleLogin}>
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white p-4">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-md w-full max-w-sm">
+        <h2 className="text-xl font-bold mb-4">Login</h2>
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full px-3 py-2 mb-2 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full px-3 py-2 mb-4 border rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          onClick={handleLogin}
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        >
           Login
         </button>
-
-        <p className="text-center text-sm mt-4 text-gray-600 dark:text-gray-300">
-          Don&#39;t have an account?{' '}
-          <Link href="/register"><a className="text-blue-500 hover:underline">Register</a></Link>
+        <p className="mt-4 text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="text-blue-500 hover:underline">
+            Register
+          </Link>
         </p>
       </div>
-    </div>
+    </main>
   );
 }
